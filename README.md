@@ -2,7 +2,7 @@
 
 Running on Firebase
 
-## setup 
+## Install Firebase CLI
 
 https://firebase.google.com/docs/cli
 
