@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZapZap - User Profile</title>
+  
+  <!-- HTMx CDN -->
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-yHdvKJiwZW7p+6w2zyiTc5t1tTtfYLwhxMDGNk0oO1lw+Yu+SAnVrW/2eNvQo41zGd8v9FnY47MIVpZLQIlU0A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>ZapZap</h1>
+    <p>Your Profile</p>
+    <!-- Navigation -->
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="userprofile.html">Profile</a>
+      <button id="logout-btn">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- User Info Section -->
+    <section id="user-info-section">
+      <h2>Profile Information</h2>
+      <div id="user-info">
+        <!-- User info will be injected here -->
+      </div>
+      <h3>Update BOLT12 Address</h3>
+      <form id="update-profile-form">
+        <label for="bolt12-address">BOLT12 Address:</label>
+        <input type="text" id="bolt12-address" name="bolt12_address" placeholder="Enter your BOLT12 address" required>
+        <button type="submit">Update Profile</button>
+      </form>
+      <div id="update-result"></div>
+    </section>
+
+    <!-- Tips Received Section -->
+    <section id="tips-received-section">
+      <h2>Tips Received</h2>
+      <div id="tips-received-list">
+        <!-- Received tips will be injected here -->
+      </div>
+    </section>
+
+    <!-- Tips Sent Section -->
+    <section id="tips-sent-section">
+      <h2>Tips Sent</h2>
+      <div id="tips-sent-list">
+        <!-- Sent tips will be injected here -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 ZapZap. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="scripts.js"></script>
+</body>
+</html>
