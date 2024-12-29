@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ZapZap - Tip a Tweet</title>
   
-  <!-- Font Awesome for Twitter Icon -->
+  <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   <!-- QR Code Library -->
@@ -18,7 +18,7 @@
   <header>
     <h1>ZapZap</h1>
     <p>Tip a Tweet in Satoshis</p>
-    <!-- Twitter Login Button -->
+    <!-- Twitter Login Button (hidden if user is logged in) -->
     <a href="#" class="twitter-login-btn" style="display: inline-flex;">
       <i class="fab fa-twitter"></i> Login with Twitter
     </a>
@@ -26,27 +26,24 @@
     <a href="#" id="logout-btn" class="logout-btn" style="display: none;">
       <i class="fas fa-sign-out-alt"></i> Logout
     </a>
+    <!-- Profile Button (hidden by default) -->
+    <a href="#" id="profile-btn" class="profile-btn" style="display: none;">
+      <i class="fas fa-user"></i> Profile
+    </a>
   </header>
 
   <main>
-    <!-- Home Section (Tip a Tweet) -->
+    <!-- Home Section (Tip a Tweet) - Always visible -->
     <section id="home-section">
       <h2>Tip a Tweet</h2>
       <form id="tip-form">
-        <label for="recipient-username">Recipient Username (optional):</label>
-        <input 
-          type="text" 
-          id="recipient-username" 
-          name="recipient_username" 
-          placeholder="@jack or jack" 
-        />
-
-        <label for="tweet-url">Tweet URL (optional):</label>
+        <label for="tweet-url">Tweet URL:</label>
         <input 
           type="url" 
           id="tweet-url" 
           name="tweet_url" 
           placeholder="https://x.com/username/status/1234567890"
+          required
         >
         
         <label>Amount (sats):</label>
@@ -72,7 +69,7 @@
       </div>
     </section>
 
-    <!-- User Profile Section -->
+    <!-- User Profile Section (hidden by default; shown when user clicks Profile) -->
     <section id="user-profile-section" style="display: none;">
       <h2>Your Profile</h2>
       <form id="update-profile-form">
@@ -86,11 +83,15 @@
         >
         <button type="submit">Update Profile</button>
       </form>
+
       <h3>Tips Received</h3>
       <div id="received-tips"></div>
 
       <h3>Tips Sent</h3>
       <div id="sent-tips"></div>
+
+      <!-- Button to go back to homepage tip form -->
+      <button id="back-home-btn" class="btn">Back to Home</button>
     </section>
   </main>
 
@@ -101,7 +102,7 @@
       <h3 id="modal-title">Tip Generated!</h3>
       <p id="modal-message"></p>
       <img id="modal-qr-code" src="" alt="QR Code">
-      <p>Invoice: <span id="modal-address"></span></p>
+      <p id="modal-address">Invoice: <span></span></p>
       <p>Scan the QR code or copy the address to complete the tip.</p>
     </div>
   </div>
@@ -113,7 +114,7 @@
 
   <!-- Error Message -->
   <div id="error-message" style="display: none;">
-    <p>An error occurred.</p>
+    <p></p>
   </div>
 
   <script src="scripts.js"></script>

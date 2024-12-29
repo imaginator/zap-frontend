@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Grab references
   const twitterLoginBtn   = document.querySelector('.twitter-login-btn');
   const logoutBtn         = document.getElementById('logout-btn');
+  const profileBtn        = document.getElementById('profile-btn');
 
   const tipForm           = document.getElementById('tip-form');
   const tipResult         = document.getElementById('tip-result');
@@ -9,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const customAmountInput = document.getElementById('custom-amount');
   const commentInput      = document.getElementById('comment');
   const tweetUrlInput     = document.getElementById('tweet-url');
-  const recipientUsernameInput = document.getElementById('recipient-username');
 
   const loadingEl         = document.getElementById('loading');
   const errorMessageEl    = document.getElementById('error-message');
@@ -19,58 +19,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateProfileForm = document.getElementById('update-profile-form');
   const receivedTipsEl    = document.getElementById('received-tips');
   const sentTipsEl        = document.getElementById('sent-tips');
+  const backHomeBtn       = document.getElementById('back-home-btn');
 
   // Modal
   const modal       = document.getElementById('tip-modal');
   const closeButton = document.querySelector('.close-button');
   const modalMessage= document.getElementById('modal-message');
   const modalQRCode = document.getElementById('modal-qr-code');
-  const modalAddress= document.getElementById('modal-address');
+  const modalAddress= document.getElementById('modal-address').querySelector('span');
 
   // read from localStorage
   let accessToken     = localStorage.getItem('access_token') || null;
   let twitterUsername = localStorage.getItem('twitter_username') || null;
 
-  // On load, parse ?access_token= & ?twitter_username= from the URL
+  // On load, parse ?token= from the URL
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('access_token') && urlParams.has('twitter_username')) {
-    accessToken     = urlParams.get('access_token');
-    twitterUsername = urlParams.get('twitter_username');
+  if (urlParams.has('token')) {
+    accessToken = urlParams.get('token');
     localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('twitter_username', twitterUsername);
+    // Remove token from URL
     window.history.replaceState({}, document.title, "/");
+    // Fetch user profile to get twitterUsername
+    fetchUserProfile();
   }
 
+  // Initialize UI
   updateUI();
-  if (accessToken && twitterUsername) {
+
+  // If the user is already logged in, fetch their profile
+  if (accessToken && !twitterUsername) {
     fetchUserProfile();
   }
 
   // 1) Login with Twitter
   twitterLoginBtn.addEventListener('click', async (e) => {
     e.preventDefault();
-    console.log("Twitter login button clicked!");
-
     try {
       showLoading();
-      console.log("Fetching the auth URL from backend...");
-
       const resp = await fetch('https://api.zap-zap.me/auth/twitter/login');
-      console.log("Fetch completed with status:", resp.status);
-
       if (!resp.ok) {
         throw new Error(`Failed to get Twitter login URL (status: ${resp.status})`);
       }
       const data = await resp.json();
-      console.log("Received data from /auth/twitter/login:", data);
-
       if (!data.authorization_url) {
         throw new Error("No authorization_url in response");
       }
-
-      console.log("Redirecting user to:", data.authorization_url);
+      // Redirect user to Twitter for login
       window.location.href = data.authorization_url;
-
     } catch (error) {
       console.error(error);
       showError(error.message || 'Error initiating Twitter login');
@@ -89,41 +84,58 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
   });
 
-  // 3) Submit Tip Form
+  // 3) Profile Button => show user profile
+  profileBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!accessToken) {
+      showError('Not logged in. Please login first.');
+      return;
+    }
+    // Hide home section, show profile
+    homeSection.style.display = 'none';
+    userProfileSection.style.display = 'block';
+    fetchUserProfile();
+  });
+
+  // 4) Back to Home
+  backHomeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    userProfileSection.style.display = 'none';
+    homeSection.style.display = 'block';
+  });
+
+  // 5) Submit Tip Form
   tipForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const tweetUrl   = tweetUrlInput.value.trim();
-    const recipientTyped = recipientUsernameInput.value.trim().replace('@',''); // remove "@" if any
     const amount     = parseInt(customAmountInput.value.trim() || "0", 10);
     const comment    = commentInput.value.trim();
 
-    // 3a) Validate amount
+    if (!tweetUrl) {
+      showError('Please enter a valid Tweet URL.');
+      return;
+    }
+
     if (!amount || amount <= 0) {
       showError('Please enter a valid amount in sats.');
       return;
     }
 
-    // 3b) Determine final recipient username
-    let finalRecipient = recipientTyped; 
-    // If user didn't type any username, we parse from tweetURL
+    // Parse recipient from tweet URL
+    let finalRecipient = extractUsernameFromTweet(tweetUrl);
     if (!finalRecipient) {
-      finalRecipient = extractUsernameFromTweet(tweetUrl);
-    }
-
-    if (!finalRecipient) {
-      showError('Please enter a recipient username or a valid tweet URL.');
+      showError('Please enter a valid Tweet URL containing username/status.');
       return;
     }
 
-    // 3c) Build tip data
+    // Build request body
     const tipData = {
-      tweet_url: tweetUrl || "",
+      tweet_url: tweetUrl,
+      recipient_twitter_username: finalRecipient,
       amount_sats: amount,
-      comment: comment,
-      recipient_twitter_username: finalRecipient
+      comment: comment
     };
 
-    // 3d) Send tip to backend
     try {
       showLoading();
       const headers = { 'Content-Type': 'application/json' };
@@ -162,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 4) Amount Buttons
+  // 6) Amount Buttons
   amountButtons.forEach(button => {
     button.addEventListener('click', () => {
       const amt = button.getAttribute('data-amount');
@@ -174,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     amountButtons.forEach(btn => btn.classList.remove('selected'));
   });
 
-  // 5) Close Modal
+  // 7) Close Modal
   closeButton.addEventListener('click', () => {
     modal.style.display = 'none';
   });
@@ -184,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6) Update Profile Form
+  // 8) Update Profile Form
   updateProfileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const bolt12Address = document.getElementById('bolt12-address').value.trim();
@@ -220,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Failed to update profile.');
       }
 
-      showError('Profile updated successfully.');
+      showSuccess('Profile updated successfully.');
       fetchUserProfile();
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -230,22 +242,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // HELPER: show/hide UI
+  /** ========== UTILS ========== **/
+
   function updateUI() {
     if (accessToken && twitterUsername) {
+      // Logged in
       twitterLoginBtn.style.display = 'none';
       logoutBtn.style.display       = 'inline-flex';
-      userProfileSection.style.display = 'block';
-      homeSection.style.display        = 'none';
+      profileBtn.style.display      = 'inline-flex';
     } else {
+      // Not logged in
       twitterLoginBtn.style.display = 'inline-flex';
       logoutBtn.style.display       = 'none';
-      userProfileSection.style.display = 'none';
-      homeSection.style.display        = 'block';
+      profileBtn.style.display      = 'none';
     }
   }
 
-  // HELPER: parse from tweet URL
   function extractUsernameFromTweet(url) {
     try {
       const urlObj = new URL(url);
@@ -254,25 +266,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (segments.length < 3) return '';
       return segments[1].replace('@','');
     } catch (err) {
-      console.error('Invalid Tweet URL:', err);
       return '';
     }
   }
 
-  // HELPER: Show the invoice & QR in a modal
   function displayTipResult(tip) {
     const qrCodeData = tip.bolt11_invoice || "No invoice?";
-
-    // Generate QR code
-    const qrCodeURL = generateQRCode(qrCodeData);
-
+    const qrCodeURL  = generateQRCode(qrCodeData);
     modalMessage.textContent = `@${tip.recipient_twitter_username} has been tipped ${tip.amount_sats} sats!`;
     modalQRCode.src          = qrCodeURL;
     modalAddress.textContent = qrCodeData;
     modal.style.display      = 'block';
   }
 
-  // HELPER: generate QR code Data URL
   function generateQRCode(data) {
     const canvas = document.createElement('canvas');
     QRCode.toCanvas(canvas, data, { width: 200 }, (error) => {
@@ -281,21 +287,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return canvas.toDataURL('image/png');
   }
 
-  // HELPER: highlight selected sat amount
   function highlightSelectedAmount(selectedButton) {
     amountButtons.forEach(btn => btn.classList.remove('selected'));
     selectedButton.classList.add('selected');
   }
 
-  // HELPER: show/hide loading
   function showLoading() {
     loadingEl.style.display = 'flex';
   }
+
   function hideLoading() {
     loadingEl.style.display = 'none';
   }
 
-  // HELPER: show an error
   function showError(msg) {
     errorMessageEl.querySelector('p').textContent = msg;
     errorMessageEl.style.display = 'block';
@@ -304,38 +308,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 5000);
   }
 
-  // HELPER: fetch user profile
+  function showSuccess(msg) {
+    errorMessageEl.querySelector('p').textContent = msg;
+    errorMessageEl.style.background = '#43a047'; /* Green */
+    errorMessageEl.style.display = 'block';
+    setTimeout(() => {
+      errorMessageEl.style.display = 'none';
+      errorMessageEl.style.background = '#e53935'; /* Reset to default */
+    }, 5000);
+  }
+
   async function fetchUserProfile() {
     try {
       showLoading();
-      const userResponse = await fetch('https://api.zap-zap.me/users/', {
+      const userResponse = await fetch('https://api.zap-zap.me/users/me', {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
       if (!userResponse.ok) {
         throw new Error('Failed to fetch user profile.');
       }
-      const users = await userResponse.json();
-      // find the one that matches our twitterUsername
-      const user = users.find(u => u.twitter_username === twitterUsername);
+      const user = await userResponse.json();
+
       if (user) {
+        twitterUsername = user.twitter_username;
+        localStorage.setItem('twitter_username', twitterUsername);
         document.getElementById('bolt12-address').value = user.bolt12_address || '';
-      }
 
-      // fetch all tips
-      const tipsResp = await fetch('https://api.zap-zap.me/tips/', {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-      });
-      if (!tipsResp.ok) {
-        throw new Error('Failed to fetch tips');
-      }
-      const tips = await tipsResp.json();
+        // Now fetch all tips
+        const tipsResp = await fetch('https://api.zap-zap.me/tips/', {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        if (!tipsResp.ok) {
+          throw new Error('Failed to fetch tips');
+        }
+        const tips = await tipsResp.json();
 
-      // filter tips received
-      const received = tips.filter(t => t.recipient_twitter_username === twitterUsername);
-      displayTips(receivedTipsEl, received, 'received');
+        // Filter tips received
+        const received = tips.filter(t => t.recipient_twitter_username === twitterUsername);
+        displayTips(receivedTipsEl, received, 'received');
 
-      // filter tips sent
-      if (user) {
+        // Filter tips sent
         const sent = tips.filter(t => t.tipper_user_id === user.id);
         displayTips(sentTipsEl, sent, 'sent');
       }
@@ -344,10 +356,10 @@ document.addEventListener('DOMContentLoaded', () => {
       showError(error.message || 'Failed to load user profile.');
     } finally {
       hideLoading();
+      updateUI();
     }
   }
 
-  // HELPER: display tips
   function displayTips(container, tips, type) {
     if (!tips || !tips.length) {
       container.innerHTML = `<p>No ${type} tips found.</p>`;
