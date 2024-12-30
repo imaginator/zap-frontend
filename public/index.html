@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ZapZap - Tip a Tweet</title>
-  
+  <title>ZapZap</title>
+
   <!-- Font Awesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <!-- QR Code Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-  
+
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <header>
     <h1>ZapZap</h1>
-    <p>Tip a Tweet in Satoshis</p>
+    <p>Show your love for good content, and get rewarded for awesome tweets. Tip bitcoiners and no-coiners with sats.
+    </p>
     <!-- Twitter Login Button (hidden if user is logged in) -->
     <a href="#" class="twitter-login-btn" style="display: inline-flex;">
       <i class="fab fa-twitter"></i> Login with Twitter
@@ -38,14 +42,9 @@
       <h2>Tip a Tweet</h2>
       <form id="tip-form">
         <label for="tweet-url">Tweet URL:</label>
-        <input 
-          type="url" 
-          id="tweet-url" 
-          name="tweet_url" 
-          placeholder="https://x.com/username/status/1234567890"
-          required
-        >
-        
+        <input type="url" id="tweet-url" name="tweet_url" placeholder="https://x.com/username/status/1234567890"
+          required>
+
         <label>Amount (sats):</label>
         <div class="amount-options">
           <button type="button" class="amount-btn" data-amount="1000">1,000</button>
@@ -53,16 +52,11 @@
           <button type="button" class="amount-btn" data-amount="4000">4,000</button>
           <input type="number" id="custom-amount" name="amount" placeholder="Enter amount" min="1">
         </div>
-        
+
         <label for="comment">Comment:</label>
-        <input 
-          type="text" 
-          id="comment" 
-          name="comment" 
-          placeholder="Optional comment"
-        >
-        
-        <button type="submit">Generate Tip</button>
+        <input type="text" id="comment" name="comment" placeholder="Optional comment">
+
+        <button type="submit">Zap</button>
       </form>
       <div id="tip-result">
         <!-- Tip invoice result goes here -->
@@ -74,13 +68,7 @@
       <h2>Your Profile</h2>
       <form id="update-profile-form">
         <label for="bolt12-address">Your BOLT12 Address:</label>
-        <input 
-          type="text" 
-          id="bolt12-address" 
-          name="bolt12_address" 
-          placeholder="Enter your BOLT12 address" 
-          required
-        >
+        <input type="text" id="bolt12-address" name="bolt12_address" placeholder="Enter your BOLT12 address" required>
         <button type="submit">Update Profile</button>
       </form>
 
@@ -119,4 +107,5 @@
 
   <script src="scripts.js"></script>
 </body>
+
 </html>

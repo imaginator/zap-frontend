@@ -11,3 +11,5 @@ https://firebase.google.com/docs/cli
 ```bash
 firebase login
 ```
+
+View the [Firebase Console](https://console.firebase.google.com/) for status
