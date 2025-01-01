@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalQRCode = document.getElementById('modal-qr-code');
   const modalAddress= document.getElementById('modal-address').querySelector('span');
 
+  const userProfileHeader = document.getElementById('user-profile-header');
+
+
   // read from localStorage
   let accessToken     = localStorage.getItem('access_token') || null;
   let twitterUsername = localStorage.getItem('twitter_username') || null;
@@ -53,20 +56,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     try {
       showLoading();
-      const response = await fetch('http://127.0.0.1:8000/users/me', {
+      if (!accessToken) {
+        throw new Error("Not authenticated. Please login first.");
+      }
+
+      const response = await fetch('https://api.zap-zap.me/users/me', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ bolt12_address: bolt12Address }),
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData?.detail) {
+          if (typeof errorData.detail === 'string') {
+            throw new Error(errorData.detail);
+          } else {
+            const errorMessages = Object.values(errorData.detail).flat().join(' ');
+            throw new Error(errorMessages || 'Failed to update BOLT12 address.');
+          }
+        }
         throw new Error('Failed to update BOLT12 address.');
       }
       showSuccess('BOLT12 address updated successfully.');
       updateBolt12Form.style.display = 'none'; // Hide form after successful update
+      fetchUserProfile(); // Refresh profile data
     } catch (err) {
       console.error('Error updating BOLT12 address:', err);
       showError(err.message || 'Failed to update BOLT12 address.');
@@ -74,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hideLoading();
     }
   });
+
 
   // On load, parse ?token= from the URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -382,8 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('twitter_username', twitterUsername);
 
       // Update profile header
-      const userProfileHeader = document.getElementById('user-profile-header');
-      userProfileHeader.textContent = `Welcome, ${twitterUsername}`;
+      userProfileHeader.textContent = `Welcome, @${twitterUsername}`;
 
         // Now fetch all tips
         const tipsResp = await fetch('https://api.zap-zap.me/tips/', {
@@ -397,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Filter only paid-in tips for the user
         const received = tips.filter(
           (t) =>
-            t.recipient_twitter_username === twitterUsername && t.paid_in === true
+            t.recipient_twitter_username === twitterUsername && Boolean(t.paid_in)
         );
         displayTips(receivedTipsEl, received, 'received');
 

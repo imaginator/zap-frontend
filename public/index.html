@@ -20,24 +20,28 @@
 <body>
   <header>
     <h1>ZapZap</h1>
-    <p>Show your love for good content, and get rewarded for awesome tweets. Tip bitcoiners and no-coiners with sats.
-    </p>
-    <!-- Twitter Login Button (hidden if user is logged in) -->
-    <a href="#" class="twitter-login-btn" style="display: inline-flex;">
-      <i class="fab fa-twitter"></i> Login with Twitter
-    </a>
-    <span id="welcome-message" style="display: none;">Welcome, <span id="account-name"></span></span>
-
-    <!-- Logout Button -->
-    <a href="#" id="logout-btn" class="logout-btn" style="display: none; margin-left: 10px;">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-    <!-- Profile Button -->
-    <a href="#" id="profile-btn" class="profile-btn" style="display: none; margin-left: 10px;">
-      <i class="fas fa-user"></i> Profile
-    </a>
-
+    <p>Show your love for good content, and get rewarded for awesome tweets. Tip bitcoiners and no-coiners with sats.</p>
+    
+    <!-- Flex container for buttons -->
+    <div class="header-buttons">
+      <!-- Twitter Login Button (hidden if user is logged in) -->
+      <a href="#" class="twitter-login-btn">
+        <i class="fab fa-twitter"></i> Login with Twitter
+      </a>
+      <span id="welcome-message" style="display: none;">Welcome, <span id="account-name"></span></span>
+  
+      <!-- Profile Button -->
+      <a href="#" id="profile-btn" class="profile-btn" style="display: none;">
+        <i class="fas fa-user"></i> Profile
+      </a>
+      
+      <!-- Logout Button -->
+      <a href="#" id="logout-btn" class="logout-btn" style="display: none;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
   </header>
+  
 
   <main>
     <!-- Home Section (Tip a Tweet) - Always visible -->
