@@ -73,7 +73,9 @@
     <!-- User Profile Section (hidden by default; shown when user clicks Profile) -->
     <section id="user-profile-section" style="display: none;">
       <h2 id="user-profile-header">Your Profile</h2>
-      <button id="update-bolt12-btn" class="btn">Update BOLT12 Address</button>
+      <button id="update-bolt12-btn" class="btn action-btn">
+        <i class="fas fa-wallet"></i> Update BOLT12 Address
+      </button>
       <form id="update-bolt12-form" style="display: none; margin-top: 10px;">
         <label for="bolt12-address">Enter your BOLT12 Address:</label>
         <input type="text" id="bolt12-address" name="bolt12_address" placeholder="Enter your BOLT12 address" required>
@@ -87,7 +89,9 @@
       <div id="sent-tips"></div>
 
       <!-- Button to go back to homepage tip form -->
-      <button id="back-home-btn" class="btn">Back to Home</button>
+      <button id="back-home-btn" class="action-btn">
+        <i class="fas fa-home"></i> Back to Home
+      </button>
     </section>
   </main>
 

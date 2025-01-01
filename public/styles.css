@@ -185,10 +185,24 @@ button[type="submit"]:hover {
 }
 
 /* User Profile Styles */
+/* User Profile Section Styles */
 #user-profile-section {
   max-width: 600px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column; /* Stacks child elements vertically */
+  align-items: center; /* Centers child elements horizontally */
+  padding: 20px; /* Optional: Adds padding for better spacing */
 }
+
+/* Add spacing between buttons */
+#user-profile-section .action-btn {
+  margin-top: 15px;
+  width: 100%; /* Makes buttons full width within the container */
+  max-width: 300px; /* Optional: Limits the maximum width of buttons */
+}
+
+
 
 #user-profile-section h2,
 #user-profile-section h3 {
@@ -348,4 +362,29 @@ button[type="submit"]:hover {
   #modal-address {
     max-width: 90%;
   }
+}
+
+/* Action Button Styles */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Green, same as .profile-btn */
+  color: white;
+  text-decoration: none;
+  border: none; /* Removes default button border */
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+  background-color: #43A047; /* Darker green on hover */
+}
+
+.action-btn i {
+  margin-right: 8px;
+  font-size: 20px;
 }
