@@ -85,7 +85,7 @@ header p {
   font-size: 16px;
   padding: 10px 20px;
   position: absolute;
-  right: 80px;
+  right: 150px;
   top: 20px;
   transition: background-color 0.3s ease;
 }
