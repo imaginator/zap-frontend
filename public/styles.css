@@ -362,7 +362,7 @@ header {
 
 .header-buttons {
   display: flex;
-  gap: 50px;
+  gap: 500px;
   margin-top: 10px;
 }
 
