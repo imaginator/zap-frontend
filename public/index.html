@@ -26,14 +26,17 @@
     <a href="#" class="twitter-login-btn" style="display: inline-flex;">
       <i class="fab fa-twitter"></i> Login with Twitter
     </a>
-    <!-- Logout Button (hidden by default) -->
-    <a href="#" id="logout-btn" class="logout-btn" style="display: none;">
+    <span id="welcome-message" style="display: none;">Welcome, <span id="account-name"></span></span>
+
+    <!-- Logout Button -->
+    <a href="#" id="logout-btn" class="logout-btn" style="display: none; margin-left: 10px;">
       <i class="fas fa-sign-out-alt"></i> Logout
     </a>
-    <!-- Profile Button (hidden by default) -->
-    <a href="#" id="profile-btn" class="profile-btn" style="display: none;">
+    <!-- Profile Button -->
+    <a href="#" id="profile-btn" class="profile-btn" style="display: none; margin-left: 10px;">
       <i class="fas fa-user"></i> Profile
     </a>
+
   </header>
 
   <main>
@@ -65,11 +68,12 @@
 
     <!-- User Profile Section (hidden by default; shown when user clicks Profile) -->
     <section id="user-profile-section" style="display: none;">
-      <h2>Your Profile</h2>
-      <form id="update-profile-form">
-        <label for="bolt12-address">Your BOLT12 Address:</label>
+      <h2 id="user-profile-header">Your Profile</h2>
+      <button id="update-bolt12-btn" class="btn">Update BOLT12 Address</button>
+      <form id="update-bolt12-form" style="display: none; margin-top: 10px;">
+        <label for="bolt12-address">Enter your BOLT12 Address:</label>
         <input type="text" id="bolt12-address" name="bolt12_address" placeholder="Enter your BOLT12 address" required>
-        <button type="submit">Update Profile</button>
+        <button type="submit" class="btn">Confirm</button>
       </form>
 
       <h3>Tips Received</h3>

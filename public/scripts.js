@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const twitterLoginBtn   = document.querySelector('.twitter-login-btn');
   const logoutBtn         = document.getElementById('logout-btn');
   const profileBtn        = document.getElementById('profile-btn');
+  const welcomeMessage = document.getElementById('welcome-message');
+  const accountName = document.getElementById('account-name');
+
+  const updateBolt12Btn = document.getElementById('update-bolt12-btn');
+  const updateBolt12Form = document.getElementById('update-bolt12-form');
+
 
   const tipForm           = document.getElementById('tip-form');
   const tipResult         = document.getElementById('tip-result');
@@ -31,6 +37,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // read from localStorage
   let accessToken     = localStorage.getItem('access_token') || null;
   let twitterUsername = localStorage.getItem('twitter_username') || null;
+
+  updateBolt12Btn.addEventListener('click', () => {
+    const isVisible = updateBolt12Form.style.display === 'block';
+    updateBolt12Form.style.display = isVisible ? 'none' : 'block';
+  });
+
+  // Submit the BOLT12 address update
+  updateBolt12Form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const bolt12Address = document.getElementById('bolt12-address').value.trim();
+    if (!bolt12Address) {
+      showError('Please enter a valid BOLT12 address.');
+      return;
+    }
+    try {
+      showLoading();
+      const response = await fetch('http://127.0.0.1:8000/users/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ bolt12_address: bolt12Address }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update BOLT12 address.');
+      }
+      showSuccess('BOLT12 address updated successfully.');
+      updateBolt12Form.style.display = 'none'; // Hide form after successful update
+    } catch (err) {
+      console.error('Error updating BOLT12 address:', err);
+      showError(err.message || 'Failed to update BOLT12 address.');
+    } finally {
+      hideLoading();
+    }
+  });
 
   // On load, parse ?token= from the URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -247,16 +290,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateUI() {
     if (accessToken && twitterUsername) {
       // Logged in
-      twitterLoginBtn.style.display = 'none';
-      logoutBtn.style.display       = 'inline-flex';
-      profileBtn.style.display      = 'inline-flex';
+      twitterLoginBtn.style.display = 'none'; // Hide login button
+      logoutBtn.style.display = 'inline-flex'; // Show logout button
+      profileBtn.style.display = 'inline-flex'; // Show profile button
+      welcomeMessage.style.display = 'inline'; // Show welcome message
+      accountName.textContent = twitterUsername; // Set account name
     } else {
       // Not logged in
-      twitterLoginBtn.style.display = 'inline-flex';
-      logoutBtn.style.display       = 'none';
-      profileBtn.style.display      = 'none';
+      twitterLoginBtn.style.display = 'inline-flex'; // Show login button
+      logoutBtn.style.display = 'none'; // Hide logout button
+      profileBtn.style.display = 'none'; // Hide profile button
+      welcomeMessage.style.display = 'none'; // Hide welcome message
+      accountName.textContent = ''; // Clear account name
     }
   }
+  
 
   function extractUsernameFromTweet(url) {
     try {
@@ -332,7 +380,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (user) {
         twitterUsername = user.twitter_username;
         localStorage.setItem('twitter_username', twitterUsername);
-        document.getElementById('bolt12-address').value = user.bolt12_address || '';
+
+      // Update profile header
+      const userProfileHeader = document.getElementById('user-profile-header');
+      userProfileHeader.textContent = `Welcome, ${twitterUsername}`;
 
         // Now fetch all tips
         const tipsResp = await fetch('https://api.zap-zap.me/tips/', {
@@ -343,8 +394,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const tips = await tipsResp.json();
 
-        // Filter tips received
-        const received = tips.filter(t => t.recipient_twitter_username === twitterUsername);
+        // Filter only paid-in tips for the user
+        const received = tips.filter(
+          (t) =>
+            t.recipient_twitter_username === twitterUsername && t.paid_in === true
+        );
         displayTips(receivedTipsEl, received, 'received');
 
         // Filter tips sent
