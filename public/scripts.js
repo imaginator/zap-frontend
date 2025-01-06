@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const welcomeMessage = document.getElementById('welcome-message');
   const accountName = document.getElementById('account-name');
 
-  const updateBolt12Btn = document.getElementById('update-bolt12-btn');
-  const updateBolt12Form = document.getElementById('update-bolt12-form');
+  const updatewalletBtn = document.getElementById('update-wallet-btn');
+  const updatewalletForm = document.getElementById('update-wallet-form');
 
 
   const tipForm           = document.getElementById('tip-form');
@@ -41,17 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let accessToken     = localStorage.getItem('access_token') || null;
   let twitterUsername = localStorage.getItem('twitter_username') || null;
 
-  updateBolt12Btn.addEventListener('click', () => {
-    const isVisible = updateBolt12Form.style.display === 'block';
-    updateBolt12Form.style.display = isVisible ? 'none' : 'block';
+  updatewalletBtn.addEventListener('click', () => {
+    const isVisible = updatewalletForm.style.display === 'block';
+    updatewalletForm.style.display = isVisible ? 'none' : 'block';
   });
 
-  // Submit the BOLT12 address update
-  updateBolt12Form.addEventListener('submit', async (e) => {
+  // Submit the wallet address update
+  updatewalletForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const bolt12Address = document.getElementById('bolt12-address').value.trim();
-    if (!bolt12Address) {
-      showError('Please enter a valid BOLT12 address.');
+    const walletAddress = document.getElementById('wallet-address').value.trim();
+    if (!walletAddress) {
+      showError('Please enter a valid wallet address.');
       return;
     }
     try {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ bolt12_address: bolt12Address }),
+        body: JSON.stringify({ wallet_address: walletAddress }),
       });
 
       if (!response.ok) {
@@ -76,17 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
             throw new Error(errorData.detail);
           } else {
             const errorMessages = Object.values(errorData.detail).flat().join(' ');
-            throw new Error(errorMessages || 'Failed to update BOLT12 address.');
+            throw new Error(errorMessages || 'Failed to update wallet address.');
           }
         }
-        throw new Error('Failed to update BOLT12 address.');
+        throw new Error('Failed to update wallet address.');
       }
-      showSuccess('BOLT12 address updated successfully.');
-      updateBolt12Form.style.display = 'none'; // Hide form after successful update
+      showSuccess('wallet address updated successfully.');
+      updatewalletForm.style.display = 'none'; // Hide form after successful update
       fetchUserProfile(); // Refresh profile data
     } catch (err) {
-      console.error('Error updating BOLT12 address:', err);
-      showError(err.message || 'Failed to update BOLT12 address.');
+      console.error('Error updating wallet address:', err);
+      showError(err.message || 'Failed to update wallet address.');
     } finally {
       hideLoading();
     }
@@ -260,9 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // 8) Update Profile Form
   updateProfileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const bolt12Address = document.getElementById('bolt12-address').value.trim();
-    if (!bolt12Address) {
-      showError('Please enter a valid BOLT12 address.');
+    const walletAddress = document.getElementById('wallet-address').value.trim();
+    if (!walletAddress) {
+      showError('Please enter a valid wallet address.');
       return;
     }
     try {
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ bolt12_address: bolt12Address })
+        body: JSON.stringify({ wallet_address: walletAddress })
       });
 
       if (!response.ok) {
