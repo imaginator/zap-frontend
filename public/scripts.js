@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 8) Update Profile Form
   updateProfileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const walletAddress = document.getElementById('wallet-address').value.trim();
+    const walletAddress = document.getElementById('wallet_address').value.trim();
     if (!walletAddress) {
       showError('Please enter a valid wallet address.');
       return;
