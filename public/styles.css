@@ -188,11 +188,13 @@ header .header-buttons {
 
 /* Main Content Styles */
 main {
+  margin-bottom: 55px;
   padding: 20px;
 }
 
 @media (max-width: 600px) {
   main {
+    margin-bottom: 30px;
     padding: 10px;
   }
 }
@@ -513,4 +515,28 @@ button[type="submit"]:hover {
 .action-btn i {
   margin-right: 8px;
   font-size: 20px;
+}
+
+/* Footer Styles */
+
+footer {
+  background: #011C2A;
+  padding: 66px 30px;
+}
+
+footer .footer-logo {
+  border-bottom: 1px solid white;
+  margin-bottom: 30px;
+  padding-bottom: 45px;
+  text-align: center;
+}
+
+footer .copyright {
+  color: white;
+}
+
+@media (max-width: 600px) {
+  footer {
+    padding: 50px 25px;
+  }
 }
