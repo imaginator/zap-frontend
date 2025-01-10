@@ -195,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       recipient_twitter_username: finalRecipient,
       amount_sats: amount,
       comment: comment
+      // image: image - add random image. do not send if no random was used
     };
 
     try {
@@ -258,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 8) Update Profile Form
-  updateProfileForm.addEventListener('submit', async (e) => {
+  updateProfileForm && updateProfileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const walletAddress = document.getElementById('wallet_address').value.trim();
     if (!walletAddress) {
@@ -450,4 +451,57 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(div);
     });
   }
+
+  /* Loading twitter post */
+  document.getElementById('tweet-url').addEventListener('input', async (e) => {
+    const tweetUrl = e.target.value.trim();
+    const tweetEmbedContainer = document.getElementById('tweet-embed');
+
+    // Clear previous content
+    tweetEmbedContainer.innerHTML = '';
+
+    // Check if the URL is valid
+    const twitterRegex = /^https:\/\/(?:www\.)?x\.com\/(?:#!\/)?(\w+)\/status\/(\d+)$/;
+    const match = tweetUrl.match(twitterRegex);
+
+    if (!match) return; // Do nothing if the URL is invalid
+
+    // Add a loader
+    const loader = document.createElement('div');
+    loader.id = 'tweet-loader';
+    loader.textContent = 'Loading tweet...'; // You can style this text or replace it with a spinner
+    tweetEmbedContainer.appendChild(loader);
+
+    try {
+      // Load the Twitter/X embed script dynamically
+      if (!window.twttr) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://platform.twitter.com/widgets.js';
+          script.async = true;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      }
+
+      // Embed the tweet
+      await window.twttr.widgets.createTweetEmbed(
+        match[2], // The tweet ID extracted from the URL
+        tweetEmbedContainer,
+        {
+          align: 'center', // Optional customization
+        }
+      );
+
+      // Remove the loader after the tweet loads
+      loader.remove();
+    } catch (err) {
+      console.error('Failed to embed the tweet:', err);
+
+      // Remove the loader and show an error message
+      loader.textContent = 'Failed to load tweet. Please check the URL.';
+    }
+  });
+
 });

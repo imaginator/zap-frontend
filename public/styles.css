@@ -216,6 +216,27 @@ main {
   text-align: center;
 }
 
+#tweet-loader {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin: 10px 0;
+  animation: fadeIn 1s infinite;
+}
+
+#tweet-embed .twitter-tweet {
+  margin-bottom: 35px;
+}
+
+@keyframes fadeIn {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 form label {
   color: #1F1F1F;
   display: block;
@@ -590,3 +611,4 @@ footer .menu-column .menu-item .item-text a:hover {
     padding: 50px 25px;
   }
 }
+
