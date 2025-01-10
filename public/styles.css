@@ -526,13 +526,57 @@ footer {
 
 footer .footer-logo {
   border-bottom: 1px solid white;
-  margin-bottom: 30px;
+  margin-bottom: 45px;
   padding-bottom: 45px;
   text-align: center;
 }
 
 footer .copyright {
   color: white;
+  text-align: center;
+}
+
+footer .footer-links {
+  display: flex;
+  gap: 48px;
+}
+
+footer .menu-column {
+  margin-bottom: 50px;
+}
+
+footer .menu-column .column-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  margin: 0 0 20px;
+}
+
+footer .menu-column .menu-item {
+  align-items: center;
+  display: flex;
+  margin-bottom: 24px;
+}
+
+footer .menu-column .menu-item .item-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+footer .menu-column img {
+  margin-right: 24px;
+}
+
+footer .menu-column .menu-item .item-text a {
+  color: white;
+  text-decoration: none;
+}
+
+footer .menu-column .menu-item .item-text a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 600px) {
