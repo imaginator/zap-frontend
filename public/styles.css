@@ -454,13 +454,13 @@ button[type="submit"]:hover {
 
 /* Error Message Styles */
 #error-message {
-  position: fixed;
-  top: 20px;
-  right: 20px;
   background: #e53935;
+  border-radius: 5px;
   color: white;
   padding: 15px;
-  border-radius: 5px;
+  position: fixed;
+  right: 20px;
+  top: 100px;
 }
 
 #error-message p {
@@ -484,6 +484,9 @@ button[type="submit"]:hover {
 
   #modal-address {
     max-width: 90%;
+  }
+  #error-message {
+    right: 10px;
   }
 }
 
