@@ -189,13 +189,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Check if an image was added
+    const randomImageElement = document.querySelector("#random-image");
+    const imageUrl = randomImageElement ? randomImageElement.src : null;
+
     // Build request body
     const tipData = {
       tweet_url: tweetUrl,
       recipient_twitter_username: finalRecipient,
       amount_sats: amount,
-      comment: comment
-      // image: image - add random image. do not send if no random was used
+      comment: comment,
+      ...(imageUrl && { image: imageUrl })
     };
 
     try {
