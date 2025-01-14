@@ -1,6 +1,12 @@
 /* styles.css */
 
 /* General Styles */
+html, body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+}
 body {
   background: #FBFBFB;
   color: #1F1F1F;
@@ -188,6 +194,7 @@ header .header-buttons {
 
 /* Main Content Styles */
 main {
+  flex: 1;
   margin-bottom: 55px;
   padding: 20px;
 }
