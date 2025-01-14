@@ -225,7 +225,11 @@ main {
 }
 
 #tweet-embed .twitter-tweet {
-  margin-bottom: 35px;
+  margin-bottom: 35px !important;
+}
+
+#tweet-embed .twitter-tweet iframe {
+  max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -542,6 +546,41 @@ button[type="submit"]:hover {
 .action-btn i {
   margin-right: 8px;
   font-size: 20px;
+}
+
+/* Random functionality Styles */
+
+.random-block {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.random-block #random-button {
+  background: #F7AF03;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  font-size: 13.3333px;
+  height: 36px;
+  padding: 9px 10px;
+  transition: background-color 0.3s ease;
+}
+
+.random-block #random-button:hover {
+  background: #ffa100;
+}
+
+#custom-image {
+  text-align: center;
+}
+
+#custom-image img {
+  margin: 0 auto 30px;
+  max-height: 200px;
+  max-width: 100%;
+  object-fit: cover;
 }
 
 /* Footer Styles */

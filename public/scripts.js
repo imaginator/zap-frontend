@@ -504,4 +504,77 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* Generate random images + text */
+  const randomButton = document.getElementById("random-button");
+  // const customAmountInput = document.getElementById("custom-amount");
+
+  // List of images
+  const images = [
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/1.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/2.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/3.jpg",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/4.jpg",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/5.jpg",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/6.jpg",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/7.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/8.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/9.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/10.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/11.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/12.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/13.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/14.gif",
+    "https://raw.githubusercontent.com/imaginator/zapzap-frontend/refs/heads/main/public/assets/15.gif",
+  ];
+
+  // List of strings
+  const prefillableStrings = [
+    "There is no second best",
+    "We call them poor",
+    "HFSP",
+    "Craig Wright is not Satoshi",
+    "We are all Satoshi",
+    "It’s going up forever Laura",
+    "How many chairs are you sitting on?",
+    "Are you all in on the chair?",
+    "Going up Going up",
+    "Wen Lambo?",
+    "Wen Moon?",
+    "I’m in it for the tech",
+    "Stay humble, stack sats.",
+    "WAGMI",
+    "Orange pill them all.",
+    "Bitcoin fixes this.",
+  ];
+
+  randomButton.addEventListener("click", () => {
+  // Select the element where the image will be added
+  const customImageContainer = document.getElementById("custom-image");
+
+  // Remove any previously added image inside 'custom-image'
+  if (customImageContainer) {
+    customImageContainer.innerHTML = "";
+  }
+
+  // Pick a random image
+  const randomImage = images[Math.floor(Math.random() * images.length)];
+  
+  // Create the image element
+  const imgElement = document.createElement("img");
+  imgElement.src = randomImage;
+  imgElement.alt = "Random Image";
+  imgElement.id = "random-image";
+  imgElement.style.display = "block";
+
+  // Append the image to the 'custom-image' container
+  if (customImageContainer) {
+    customImageContainer.appendChild(imgElement);
+  }
+
+  // Pick a random string and set it as the input value
+  const randomString = prefillableStrings[Math.floor(Math.random() * prefillableStrings.length)];
+  commentInput.value = randomString;
+});
+
+
 });
